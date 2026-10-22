@@ -27,10 +27,13 @@ import androidx.compose.ui.unit.sp
 import com.example.quiz_game.R
 import com.example.quiz_game.viewmodel.QuizViewModel
 
+// Tela inicial (Home) do aplicativo construída com Jetpack Compose
 @Composable
 fun HomeScreen(vm: QuizViewModel, onStart: () -> Unit) {
+    // Observa o estado atual do ViewModel como um State do Compose reativo
     val state by vm.state.collectAsState()
 
+    // Layout principal estruturado em coluna, centralizado e com fundo azul claro
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -39,6 +42,7 @@ fun HomeScreen(vm: QuizViewModel, onStart: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Exibição do logotipo do quiz carregado dos recursos
         Image(
             painter = painterResource(id = R.drawable.quiz_logo),
             contentDescription = "Logo",
@@ -47,10 +51,12 @@ fun HomeScreen(vm: QuizViewModel, onStart: () -> Unit) {
 
         Spacer(modifier = Modifier.height(48.dp))
 
+        // Título principal exibido na tela inicial
         Text(text = "QUIZATRON 3000", fontSize = 28.sp)
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Campo de texto para o usuário digitar o seu nome
         OutlinedTextField(
             value = state.playerName,
             onValueChange = { vm.setName(it) },
@@ -68,6 +74,7 @@ fun HomeScreen(vm: QuizViewModel, onStart: () -> Unit) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Botão para iniciar o quiz, habilitado apenas se o nome não estiver em branco
         Button(
             onClick = onStart,
             enabled = state.playerName.isNotBlank(),

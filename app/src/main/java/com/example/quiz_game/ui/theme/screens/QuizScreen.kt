@@ -19,8 +19,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.example.quiz_game.R
-
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,19 +27,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.quiz_game.R
 import com.example.quiz_game.viewmodel.QuizViewModel
 
+// Tela de perguntas (QuizScreen) onde o jogo de perguntas e respostas acontece
 @Composable
 fun QuizScreen(vm: QuizViewModel, onFinish: () -> Unit) {
+    // Observa o estado atual do ViewModel de forma reativa
     val state by vm.state.collectAsState()
 
+    // Efeito lançado para chamar o callback de término quando o quiz estiver finalizado
     LaunchedEffect(state.finished) { if (state.finished) onFinish() }
     if (state.finished) return
 
+    // Layout principal da tela de perguntas com fundo rosa e espaçamento interno
     Column(
         Modifier.fillMaxSize().background(Color(0xFFFF92D3)).padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Logotipo menor exibido no topo da tela do quiz
         Image(
             painterResource(
                 R.drawable.quiz_logo),
@@ -50,6 +54,8 @@ fun QuizScreen(vm: QuizViewModel, onFinish: () -> Unit) {
         )
 
         Spacer(Modifier.height(16.dp))
+
+        // Superfície estilizada para exibir o indicador de progresso (ex: "Pergunta 1 de 5")
         Surface(
             color = Color(0xFF72D8A8),
             shape = RoundedCornerShape(8.dp),
@@ -60,15 +66,21 @@ fun QuizScreen(vm: QuizViewModel, onFinish: () -> Unit) {
         }
 
         Spacer(Modifier.height(16.dp))
+
+        // Cartão branco que abriga o enunciado da pergunta e as alternativas
         Card(
             colors = CardDefaults.cardColors(containerColor = Color.White),
             modifier = Modifier.fillMaxWidth()
         ) {
 
             Column(Modifier.padding(16.dp)) {
+                // Texto com a pergunta atual
                 Text(state.current.text, fontSize = 20.sp)
                 Spacer(Modifier.height(16.dp))
+
+                // Itera sobre as opções de resposta da pergunta atual
                 state.current.options.forEachIndexed { i, option ->
+                    // Define a cor de fundo do botão com base no estado da resposta selecionada
                     val bg = when {
                         state.selectedIndex == null -> Color.White
                         i == state.current.correctIndex -> Color(0xFF4CAF50) // verde: correta
@@ -76,6 +88,7 @@ fun QuizScreen(vm: QuizViewModel, onFinish: () -> Unit) {
                         else -> Color.White
                     }
 
+                    // Botão para cada alternativa de resposta
                     OutlinedButton(
                         onClick = { vm.answer(i) },
                         colors = ButtonDefaults.outlinedButtonColors(containerColor = bg, contentColor = Color.Black),
